@@ -9,7 +9,7 @@
 </template>
 
 <script setup>
-import OrderForm from '../components/OrderForm/OrderForm.vue';
+import OrderForm from '../components/OrderForm.vue';
 </script>
 
 <style scoped>
