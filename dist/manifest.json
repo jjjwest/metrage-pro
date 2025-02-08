@@ -1,21 +1,9 @@
 {
-    "name": "metrage.pro",
-    "short_name": "Метраж",
-    "description": "Замеры помещений",
-    "icons": [
-      {
-        "src": "/img/icons/icon-192x192.png",
-        "sizes": "192x192",
-        "type": "image/png"
-      },
-      {
-        "src": "/img/icons/icon-512x512.png",
-        "sizes": "512x512",
-        "type": "image/png"
-      }
-    ],
-    "start_url": "/",
-    "display": "standalone",
-    "theme_color": "#42b983",
-    "background_color": "#ffffff"
-  }
+  "name": "Metrage Pro",
+  "short_name": "Metrage Pro",
+  "description": "Онлайн-сервис заказа замеров недвижимости в Москве.",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#1E3A5F",
+  "background_color": "#ffffff"
+}
