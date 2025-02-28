@@ -1,0 +1,11 @@
+@import '@mdi/font/css/materialdesignicons.css';
+
+.mdi {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mdi::before {
+  font-size: inherit;
+}

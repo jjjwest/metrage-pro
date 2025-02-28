@@ -1,6 +1,6 @@
-
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import { getFunctions, httpsCallable } from 'firebase/functions';
 
 const firebaseConfig = {
     apiKey: "AIzaSyA4vz8TZZ8VI5vnzmrTegiubzrI5bn-rG0", 
@@ -12,8 +12,9 @@ const firebaseConfig = {
     measurementId: "G-M71V1WN43N"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app); 
+const analytics = getAnalytics(app);
+const functions = getFunctions(app);
 
-export default app; 
+export const sendOrderEmail = httpsCallable(functions, 'sendOrderEmail');
+export default app;

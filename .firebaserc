@@ -1,6 +1,7 @@
 {
   "projects": {
-    "1ver.": "metrage-d74ef"
+    "1ver.": "metrage-d74ef",
+    "default": "metrage-d74ef"
   },
   "targets": {},
   "etags": {}
