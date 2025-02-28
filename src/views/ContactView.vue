@@ -1,9 +1,9 @@
 <template>
-  <main class="gradient-1 text-white min-h-screen py-16">
+  <main class="gradient-1  min-h-screen py-16">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-16 animate-fade-in">
         <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">Контакты</h1>
-        <p class="text-xl text-white/90 max-w-3xl mx-auto">
+        <p class="text-xl  max-w-3xl mx-auto">
           Свяжитесь с нами удобным для вас способом или оставьте заявку, и мы перезвоним вам
         </p>
       </div>
@@ -12,46 +12,46 @@
         <div class="animate-fade-in">
           <div class="glass-card p-8 rounded-xl space-y-8">
             <div class="flex items-start space-x-4">
-              <PhoneIcon class="w-6 h-6 text-white flex-shrink-0 mt-1" />
+              <PhoneIcon class="w-6 h-6  flex-shrink-0 mt-1" />
               <div>
                 <h3 class="text-xl font-bold mb-2">Телефон</h3>
                 <a href="tel:+79260562903" class="text-lg hover:text-blue-200 transition-colors">
                   +7 (926) 056-29-03
                 </a>
-                <p class="text-white/70 text-sm mt-1">Ежедневно с 9:00 до 21:00</p>
+                <p class=" text-sm mt-1">Ежедневно с 9:00 до 21:00</p>
               </div>
             </div>
 
             <div class="flex items-start space-x-4">
-              <EnvelopeIcon class="w-6 h-6 text-white flex-shrink-0 mt-1" />
+              <EnvelopeIcon class="w-6 h-6  flex-shrink-0 mt-1" />
               <div>
                 <h3 class="text-xl font-bold mb-2">Email</h3>
                 <a href="mailto:info@metrage.pro" class="text-lg hover:text-blue-200 transition-colors">
                   info@metrage.pro
                 </a>
-                <p class="text-white/70 text-sm mt-1">Отвечаем в течение 30 минут</p>
+                <p class=" text-sm mt-1">Отвечаем в течение 30 минут</p>
               </div>
             </div>
           
             <div class="flex items-start space-x-4">
-              <ClockIcon class="w-6 h-6 text-white flex-shrink-0 mt-1" />
+              <ClockIcon class="w-6 h-6  flex-shrink-0 mt-1" />
               <div>
                 <h3 class="text-xl font-bold mb-2">Режим работы</h3>
                 <p class="text-lg">Пн-Вс: 9:00 - 21:00</p>
-                <p class="text-white/70 text-sm mt-1">Без выходных</p>
+                <p class=" text-sm mt-1">Без выходных</p>
               </div>
             </div>
 
             <div class="pt-4 border-t border-white/10">
               <h3 class="text-xl font-bold mb-4"></h3>
               <div class="flex space-x-4">
-                <a href="#" class="text-white hover:text-blue-200 transition-colors">
+                <a href="#" class=" hover:text-blue-200 transition-colors">
                   <i class="fab fa-telegram text-2xl"></i>
                 </a>
-                <a href="#" class="text-white hover:text-blue-200 transition-colors">
+                <a href="#" class=" hover:text-blue-200 transition-colors">
                   <i class="fab fa-whatsapp text-2xl"></i>
                 </a>
-                <a href="#" class="text-white hover:text-blue-200 transition-colors">
+                <a href="#" class=" hover:text-blue-200 transition-colors">
                   <i class="fab fa-vk text-2xl"></i>
                 </a>
               </div>
@@ -69,7 +69,7 @@
                   type="text" 
                   id="name" 
                   v-model="form.name"
-                  class="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                  class="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 "
                   required
                 >
               </div>
@@ -80,7 +80,7 @@
                   type="tel" 
                   id="phone" 
                   v-model="form.phone"
-                  class="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                  class="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 "
                   required
                 />
               </div>
@@ -91,7 +91,7 @@
                   type="email" 
                   id="email" 
                   v-model="form.email"
-                  class="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                  class="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 "
                 >
               </div>
 
@@ -101,7 +101,7 @@
                   id="message" 
                   v-model="form.message"
                   rows="4"
-                  class="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                  class="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 "
                   required
                 ></textarea>
               </div>
@@ -121,7 +121,6 @@
 </template>
 
 <script setup>
-import '../styles/gradients.css'
 import { ref } from 'vue'
 import { 
   PhoneIcon, 

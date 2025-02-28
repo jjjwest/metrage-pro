@@ -1,6 +1,6 @@
 <template>
   <main class="gradient-1 text-gray-900 min-h-screen">
-    <section class="pt-8 pb-16 sm:py-12 md:py-16 lg:py-20" style="margin-top: -60px;">
+    <section class="pt-8 pb-16 sm:py-12 md:py-16 lg:py-20">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
           <div class="animate-fade-in">
@@ -13,34 +13,32 @@
               </p>
 
               <div class="relative">
-                <h3 class="text-2xl font-semibold mb-6 inline-block">
-                  Как мы работаем
-                  <div class="h-1 w-full bg-primary rounded mt-1"></div>
-                </h3>
+                <h3 class="text-2xl font-semibold mb-2">Как мы работаем</h3>
+                <div class="h-1 w-full bg-primary rounded mt-1"></div>
 
-                <div class="flex flex-col space-y-4">
-                  <div class="glass-card p-4 sm:p-6 rounded-2xl hover:scale-105 transition-all duration-300 flex items-center space-x-4">
+                <div class="flex flex-col space-y-2 mt-4">
+                  <div class="glass-card p-1 sm:p-2 rounded-2xl hover:scale-105 transition-all duration-300 flex items-center">
                     <div class="step-number">1</div>
-                    <div class="text-xl sm:text-2xl mr-3">📝</div>
-                    <div class="font-medium text-sm sm:text-base">Ждём вашу заявку до 18:00</div>
+                    <div class="text-xl sm:text-2xl ml-2">📝</div>
+                    <div class="font-medium text-sm sm:text-base leading-tight ml-2">Ждём вашу заявку до 18:00</div>
                   </div>
 
-                  <div class="glass-card p-4 sm:p-6 rounded-2xl hover:scale-105 transition-all duration-300 flex items-center space-x-4">
+                  <div class="glass-card p-1 sm:p-2 rounded-2xl hover:scale-105 transition-all duration-300 flex items-center">
                     <div class="step-number">2</div>
-                    <div class="text-xl sm:text-2xl mr-3">📞</div>
-                    <div class="font-medium text-sm sm:text-base">Связываемся с вами до 20:00</div>
+                    <div class="text-xl sm:text-2xl ml-2">📞</div>
+                    <div class="font-medium text-sm sm:text-base leading-tight ml-2">Связываемся с вами до 20:00</div>
                   </div>
 
-                  <div class="glass-card p-4 sm:p-6 rounded-2xl hover:scale-105 transition-all duration-300 flex items-center space-x-4">
+                  <div class="glass-card p-1 sm:p-2 rounded-2xl hover:scale-105 transition-all duration-300 flex items-center">
                     <div class="step-number">3</div>
-                    <div class="text-xl sm:text-2xl mr-3">📏</div>
-                    <div class="font-medium text-sm sm:text-base">Выезжаем в согласованное время</div>
+                    <div class="text-xl sm:text-2xl ml-2">📏</div>
+                    <div class="font-medium text-sm sm:text-base leading-tight ml-2">Выезжаем в согласованное время</div>
                   </div>
 
-                  <div class="glass-card p-4 sm:p-6 rounded-2xl hover:scale-105 transition-all duration-300 flex items-center space-x-4">
+                  <div class="glass-card p-1 sm:p-2 rounded-2xl hover:scale-105 transition-all duration-300 flex items-center">
                     <div class="step-number">4</div>
-                    <div class="text-xl sm:text-2xl mr-3">📋</div>
-                    <div class="font-medium text-sm sm:text-base">Отправляем замеры и фото на ваш email до 12:00 следующего дня</div>
+                    <div class="text-xl sm:text-2xl ml-2">📋</div>
+                    <div class="font-medium text-sm sm:text-base leading-tight ml-2">Отправляем замеры и фото на ваш email до 12:00 следующего дня</div>
                   </div>
                 </div>
               </div>
@@ -49,7 +47,7 @@
 
           <div class="flex flex-col items-center animate-fade-in lg:sticky lg:top-8">
             <div class="glass-card p-5 sm:p-6 rounded-3xl w-full max-w-lg mx-auto">
-              <OrderForm :form="form" /> 
+              <OrderForm :form="form" />
             </div>
           </div>
         </div>
@@ -97,6 +95,8 @@ const form = reactive({
 
 <style scoped>
 .step-number {
+  min-width: 32px;
+  min-height: 32px;
   width: 32px;
   height: 32px;
   background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);

@@ -1,32 +1,32 @@
 <template>
-  <div class="gradient-1 min-h-screen py-8">
+  <div class="min-h-screen py-8">
     <div class="container mx-auto px-4">
-      <h1 class="text-2xl font-bold mb-4 text-white">Личный кабинет</h1>
-      <p class="text-white/80 mb-6">Добро пожаловать, {{ user.name }}!</p>
+      <h1 class="text-2xl font-bold mb-4">Личный кабинет</h1>
+      <p class=" mb-6">Добро пожаловать, {{ user.name }}!</p>
       
-      <h2 class="text-xl font-semibold mb-4 text-white">Ваши заявки:</h2>
+      <h2 class="text-xl font-semibold mb-4">Ваши заявки:</h2>
       <div class="glass-card rounded-lg shadow overflow-x-auto">
         <table class="min-w-full">
           <thead class="border-b border-white/10">
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-white/70 uppercase tracking-wider">ID Заявки</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-white/70 uppercase tracking-wider">Город</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-white/70 uppercase tracking-wider">Тип замера</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-white/70 uppercase tracking-wider">Статус</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-white/70 uppercase tracking-wider">Исполнитель</th>
+              <th class="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">ID Заявки</th>
+              <th class="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">Город</th>
+              <th class="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">Тип замера</th>
+              <th class="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">Статус</th>
+              <th class="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">Исполнитель</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-white/10">
             <tr v-for="(application, index) in userApplications" :key="index">
-              <td class="px-6 py-4 whitespace-nowrap text-white">{{ index + 1 }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-white">{{ application.city }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-white">{{ application.selectedType }}</td>
+              <td class="px-6 py-4 whitespace-nowrap">{{ index + 1 }}</td>
+              <td class="px-6 py-4 whitespace-nowrap">{{ application.city }}</td>
+              <td class="px-6 py-4 whitespace-nowrap">{{ application.selectedType }}</td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <span :class="getStatusClass(application.status)">
                   {{ application.status }}
                 </span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-white">{{ application.executorId || 'Не назначен' }}</td>
+              <td class="px-6 py-4 whitespace-nowrap">{{ application.executorId || 'Не назначен' }}</td>
             </tr>
           </tbody>
         </table>
@@ -36,21 +36,20 @@
 </template>
 
 <script setup>
-import '../styles/gradients.css'
 import { ref, computed } from 'vue'
 import { useUserStore } from '../stores/userStore'
 
 const userStore = useUserStore()
 const applications = ref([
   {
-    userId: 'Пользователь',
+    userId: 'Пользователь1',
     city: 'Москва',
     selectedType: 'Квартира',
     status: 'new',
     executorId: ''
   },
   {
-    userId: 'Пользователь',
+    userId: 'Пользователь2',
     city: 'СПб',
     selectedType: 'Дом',
     status: 'assigned',
@@ -70,6 +69,7 @@ const getStatusClass = (status) => {
   }
   return classes[status] || ''
 }
+
 </script>
 
 <style scoped>

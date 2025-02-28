@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -18,10 +19,10 @@
 }
 
 body {
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-  min-height: 100vh;
   font-family: 'Roboto', sans-serif;
   color: var(--text-primary);
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
 }
 
 .gradient-animate {
@@ -44,7 +45,7 @@ body {
   background: linear-gradient(90deg, #67e8f9 0%, #22d3ee 50%, #06b6d4 100%);
   background-size: 200% 100%;
   border-radius: 8px;
-  transition: background-position 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Optimized transition */
+  transition: background-position 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 15px rgba(6, 182, 212, 0.1);
 }
 
@@ -54,10 +55,9 @@ body {
   transform: translateY(-2px);
 }
 
-
 ::-webkit-scrollbar {
   width: 10px;
-  background: rgba(241, 245, 249, 0.5); /* Combined scrollbar track and thumb styles */
+  background: rgba(241, 245, 249, 0.5);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -112,4 +112,3 @@ body {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
-

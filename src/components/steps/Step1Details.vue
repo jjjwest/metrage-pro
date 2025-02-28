@@ -43,6 +43,7 @@
           <input type="number" :id="option.id" v-model.number="form.selectedOptions[option.id]" @input="updateField('selectedOptions', form.selectedOptions)" min="0" class="w-24 px-3 py-2 text-base border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
            </div>
       </div>
+       <span v-if="errors.selectedOptions" class="text-red-500 text-sm mt-1">{{ errors.selectedOptions[0] }}</span>
     </div>
 
     <div v-else-if="form.selectedType === 'Офис'" class="mb-6">
@@ -50,9 +51,10 @@
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center">
         <div v-for="option in optionsOffice" :key="option.id" class="flex flex-col items-center space-y-2 w-full">
           <label :for="option.id" class="text-base text-gray-700 text-center whitespace-nowrap">{{ option.name }}</label>
-<input type="number" :id="option.id" v-model.number="form.selectedOptions[option.id]"  @input="updateField('selectedOptions', form.selectedOptions)" min="0" class="w-24 px-3 py-2 text-base border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+          <input type="number" :id="option.id" v-model.number="form.selectedOptions[option.id]"  @input="updateField('selectedOptions', form.selectedOptions)" min="0" class="w-24 px-3 py-2 text-base border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
         </div>
       </div>
+        <span v-if="errors.selectedOptions" class="text-red-500 text-sm mt-1">{{ errors.selectedOptions[0] }}</span>
     </div>
 
     <div v-else-if="form.selectedType === 'Обмер'" class="mb-6">
@@ -122,7 +124,7 @@ import { FULL_ROOM_PRICE, ROOM_PRICE } from '@/stores/orderPricing';
 
 const props = defineProps({
   form: { type: Object, required: true },
-  errors: { type: Object, default: () => ({}) } // Принимаем объект ошибок
+  errors: { type: Object, default: () => ({}) }
 });
 
 const emit = defineEmits(['update-field']);
@@ -162,7 +164,7 @@ const oneHourIntervals = computed(() => {
   for (let hour = 8; hour < 20; hour++) {
     const start = `${hour.toString().padStart(2, '0')}:00`;
     const end = `${(hour + 1).toString().padStart(2, '0')}:00`;
-    intervals.push(`${start}-${end}`);
+    intervals.push(`<span class="math-inline">\{start\}\-</span>{end}`);
   }
   return intervals;
 });

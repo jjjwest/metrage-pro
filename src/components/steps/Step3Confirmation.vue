@@ -1,8 +1,8 @@
 <template>
   <div class="step-section">
     <div class="mb-6">
-      <label for="firmName" class="block text-base font-medium text-gray-700 mb-2">
-        Название фирмы 
+      <label for="firmName" class="block text-base font-medium  mb-2">
+        Название фирмы
       </label>
       <input
         type="text"
@@ -11,9 +11,10 @@
         placeholder="Введите название вашей компании"
         class="form-input"
       />
+       <span v-if="errors.firmName" class="text-red-500 text-sm mt-1">{{ errors.firmName[0] }}</span>
     </div>
     <div class="mb-6">
-      <label for="managerEmail" class="block text-base font-medium text-gray-700 mb-2">
+      <label for="managerEmail" class="block text-base font-medium  mb-2">
         Email менеджера *
       </label>
       <input
@@ -23,9 +24,10 @@
         placeholder="Введите email"
         class="form-input"
       />
+       <span v-if="errors.managerEmail" class="text-red-500 text-sm mt-1">{{ errors.managerEmail[0] }}</span>
     </div>
     <div class="mb-6">
-      <label for="managerPhone" class="block text-base font-medium text-gray-700 mb-2">
+      <label for="managerPhone" class="block text-base font-medium  mb-2">
         Телефон менеджера *
       </label>
       <input
@@ -35,13 +37,12 @@
         placeholder="Введите телефон"
         class="form-input"
       />
+        <span v-if="errors.managerPhone" class="text-red-500 text-sm mt-1">{{ errors.managerPhone[0] }}</span>
     </div>
   </div>
 </template>
 
 <script setup>
-import { sendOrderEmail } from '@/firebase';
-
 const props = defineProps({
   form: {
     type: Object,
@@ -50,50 +51,29 @@ const props = defineProps({
   totalSum: {
     type: Number,
     required: true,
+  },
+    errors: {  // Receive errors as a prop
+    type: Object,
+    default: () => ({})
   }
 });
 
-async function submitForm() {
-  try {
-    const result = await sendOrderEmail({
-      firmName: props.form.firmName,
-      managerEmail: props.form.managerEmail,
-      managerPhone: props.form.managerPhone,
-      city: props.form.city,
-      address: props.form.address,
-      selectedType: props.form.selectedType,
-      date: props.form.date,
-      selectedOptions: props.form.selectedOptions,
-      urgent: props.form.urgent,
-      selectedTime: props.form.selectedTime,
-      totalSum: props.totalSum
-    });
-    
-    if (result.data.success) {
-      alert('Заявка успешно отправлена!');
-    }
-  } catch (error) {
-    console.error('Error:', error);
-    alert('Произошла ошибка при отправке заявки');
-  }
-}
+const emit = defineEmits(['update-field']) // Add emit
 </script>
 
 <style scoped>
 .step-section {
   background: var(--bg-dark);
   border-radius: 16px;
-  color: var(--text-primary);
 }
 
-label {
-  color: var(--text-primary) !important;
-}
+/* No need for !important overrides here. Let global styles apply. */
+/* If you DO need to customize something SPECIFICALLY for this component,
+   do it with Tailwind classes in the <template>, not here. */
 
 input {
   background: var(--bg-input);
   border: 1px solid var(--border-light);
-  color: var(--text-primary) !important;
   width: 100%;
   height: 42px;
 }
@@ -111,23 +91,9 @@ input::placeholder {
   border-bottom: 1px solid var(--border-light);
 }
 
-.summary-label, .summary-value {
-  color: var(--text-primary) !important;
-}
-
 .total-sum {
   background: var(--bg-input);
   border: 1px solid var(--border-light);
 }
 
-.submit-button {
-  background: #22c55e;
-  transition: all 0.3s ease;
-}
-
-.submit-button:hover {
-  background: #16a34a;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
-}
 </style>

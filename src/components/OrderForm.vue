@@ -2,10 +2,9 @@
   <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-xl mx-auto">
     <div class="text-center mb-4">
       <h2 class="text-xl font-bold mb-1">Калькулятор стоимости замера</h2>
-      <p class="text-sm text-gray-600">Быстро и точно рассчитаем стоимость.</p>
     </div>
     <div class="space-y-4">
-      <component :is="currentStepComponent" :form="form" :errors="validationErrors" @update-field="updateField" />
+      <component :is="currentStepComponent" :form="form" :errors="validationErrors" @update-field="updateField" :total-sum="totalSum" /> 
     </div>
 
     <div class="mt-6">

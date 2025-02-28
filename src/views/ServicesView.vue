@@ -1,25 +1,25 @@
 <template>
-  <main class="gradient-1 text-white min-h-screen py-16">
+  <main class="gradient-1  min-h-screen py-16">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-16 animate-fade-in">
         <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">Наши услуги</h1>
-        <p class="text-xl text-white/90 max-w-3xl mx-auto">
+        <p class="text-xl  max-w-3xl mx-auto">
           Предоставляем профессиональные услуги замера помещений с использованием современного оборудования
         </p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in">
-        <div v-for="(service, index) in services" :key="index" 
+        <div v-for="(service, index) in services" :key="index"
              class="glass-card p-8 rounded-xl transition-all duration-300 hover:transform hover:scale-105">
-          <div class="text-white mb-6">
+          <div class=" mb-6">
             <component :is="service.icon" class="w-12 h-12" />
           </div>
           <h3 class="text-2xl font-bold mb-4">{{ service.title }}</h3>
-          <p class="text-white mb-6">{{ service.description }}</p>
+          <p class=" mb-6">{{ service.description }}</p>
           <div class="flex justify-between items-center">
             <span class="text-xl font-bold">от {{ service.price }} ₽</span>
-            <router-link 
-              to="/order" 
+            <router-link
+              to="/order"
               class="gradient-3 px-6 py-2 rounded-full text-white font-semibold hover:shadow-lg transition-all duration-300"
             >
               Заказать
@@ -31,13 +31,13 @@
       <div class="mt-20 animate-fade-in">
         <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12">Почему выбирают нас</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div v-for="(feature, index) in features" :key="index" 
+          <div v-for="(feature, index) in features" :key="index"
                class="glass-card p-6 rounded-xl text-center">
-            <div class="text-white mb-4">
+            <div class=" mb-4">
               <component :is="feature.icon" class="w-10 h-10 mx-auto" />
             </div>
             <h3 class="text-xl font-bold mb-2">{{ feature.title }}</h3>
-            <p class="text-white">{{ feature.description }}</p>
+            <p class="">{{ feature.description }}</p>
           </div>
         </div>
       </div>
@@ -46,15 +46,15 @@
 </template>
 
 <script setup>
-import '../styles/gradients.css'
-import { 
-  HomeIcon, 
-  BuildingOfficeIcon, 
-  DocumentIcon, 
+
+import {
+  HomeIcon,
+  BuildingOfficeIcon,
+  DocumentIcon,
   ClockIcon,
   ChartBarSquareIcon,
   CurrencyDollarIcon,
-  ShieldCheckIcon 
+  ShieldCheckIcon
 } from '@heroicons/vue/24/outline'
 
 const services = [
