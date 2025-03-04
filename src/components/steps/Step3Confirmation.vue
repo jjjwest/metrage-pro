@@ -1,7 +1,7 @@
 <template>
   <div class="step-section">
     <div class="mb-6">
-      <label for="firmName" class="block text-base font-medium  mb-2">
+      <label for="firmName" class="block text-base font-medium mb-2">
         Название фирмы
       </label>
       <input
@@ -14,7 +14,7 @@
        <span v-if="errors.firmName" class="text-red-500 text-sm mt-1">{{ errors.firmName[0] }}</span>
     </div>
     <div class="mb-6">
-      <label for="managerEmail" class="block text-base font-medium  mb-2">
+      <label for="managerEmail" class="block text-base font-medium mb-2">
         Email менеджера *
       </label>
       <input
@@ -27,7 +27,7 @@
        <span v-if="errors.managerEmail" class="text-red-500 text-sm mt-1">{{ errors.managerEmail[0] }}</span>
     </div>
     <div class="mb-6">
-      <label for="managerPhone" class="block text-base font-medium  mb-2">
+      <label for="managerPhone" class="block text-base font-medium mb-2">
         Телефон менеджера *
       </label>
       <input
@@ -52,28 +52,29 @@ const props = defineProps({
     type: Number,
     required: true,
   },
-    errors: {  // Receive errors as a prop
+    errors: {
     type: Object,
     default: () => ({})
   }
 });
 
-const emit = defineEmits(['update-field']) // Add emit
+const emit = defineEmits(['update-field'])
 </script>
 
 <style scoped>
 .step-section {
-  background: var(--bg-dark);
+  background: #FFFFFF;
   border-radius: 16px;
 }
 
-/* No need for !important overrides here. Let global styles apply. */
-/* If you DO need to customize something SPECIFICALLY for this component,
-   do it with Tailwind classes in the <template>, not here. */
+label {
+  color: var(--text-primary) !important;
+}
 
 input {
-  background: var(--bg-input);
+  background: #FFFFFF;
   border: 1px solid var(--border-light);
+  color: var(--text-primary) !important;
   width: 100%;
   height: 42px;
 }
@@ -92,8 +93,7 @@ input::placeholder {
 }
 
 .total-sum {
-  background: var(--bg-input);
+  background: #FFFFFF;
   border: 1px solid var(--border-light);
 }
-
 </style>

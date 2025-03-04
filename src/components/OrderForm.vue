@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-xl mx-auto">
+  <div class="glass-form w-full max-w-xl mx-auto">
     <div class="text-center mb-4">
       <h2 class="text-xl font-bold mb-1">Калькулятор стоимости замера</h2>
     </div>
@@ -32,6 +32,12 @@
         </button>
       </div>
     </div>
+    
+    <SuccessModal 
+      :show-success-modal="showSuccessModal" 
+      :order-number="orderNumber" 
+      @close="closeSuccessModal" 
+    />
   </div>
 </template>
 
@@ -40,13 +46,16 @@ import { ref, reactive, computed } from 'vue';
 import Step1Details from './steps/Step1Details.vue';
 import Step2Contacts from './steps/Step2Contacts.vue';
 import Step3Confirmation from './steps/Step3Confirmation.vue';
+import SuccessModal from './common/SuccessModal.vue';
 import { BASE_FEE, AREA_RATE, DISTANCE_RATE, ROOM_PRICE, FULL_ROOM_PRICE } from '@/stores/orderPricing';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email, minLength, numeric, minValue } from '@vuelidate/validators';
-import { useFormValidation } from '@/composables/useFormValidation'; // Correct
+import { useFormValidation } from '@/composables/useFormValidation';
 
 const currentStep = ref(1);
 const totalSteps = 3;
+const showSuccessModal = ref(false);
+const orderNumber = ref('');
 
 const form = reactive({
   city: '',
@@ -143,8 +152,11 @@ const updateField = (field, value) => {
     form[field] = value;
 };
 
-async function submitForm() {
+function closeSuccessModal() {
+  showSuccessModal.value = false;
+}
 
+async function submitForm() {
     const finalIsValid = await v$.value.$validate();
     if (!finalIsValid) return;
 
@@ -167,8 +179,9 @@ async function submitForm() {
 
     const result = await response.json();
     if (result.success) {
-      alert("Success")
-      resetForm()
+      orderNumber.value = result.orderNumber || Math.floor(100000 + Math.random() * 900000).toString();
+      showSuccessModal.value = true;
+      resetForm();
     } else {
       throw new Error(result.error || 'Ошибка при отправке заявки');
     }
@@ -196,7 +209,6 @@ function resetForm() {
   currentStep.value = 1;
   v$.value.$reset();
   validationErrors.value = {};
-
 }
 
 </script>

@@ -51,7 +51,7 @@ const props = defineProps({
 
 <style scoped>
 .step-section {
-  background: var(--bg-dark);
+  background: #FFFFFF;
   border-radius: 16px;
   color: var(--text-primary);
 }
@@ -61,7 +61,7 @@ label {
 }
 
 input {
-  background: var(--bg-input);
+  background: #FFFFFF;
   border: 1px solid var(--border-light);
   color: var(--text-primary) !important;
   width: 100%;
