@@ -17,28 +17,33 @@
                 <div class="h-1 w-full bg-primary rounded mt-1"></div>
 
                 <div class="flex flex-col space-y-2 mt-4">
-                  <div class="glass-card p-1 sm:p-2 rounded-2xl hover:scale-105 transition-all duration-300 flex items-center">
+                  <div
+                    class="glass-card p-1 sm:p-2 rounded-2xl hover:scale-105 transition-all duration-300 flex items-center">
                     <div class="step-number">1</div>
                     <div class="text-xl sm:text-2xl ml-2">📝</div>
                     <div class="font-medium text-sm sm:text-base leading-tight ml-2">Ждём вашу заявку до 18:00</div>
                   </div>
 
-                  <div class="glass-card p-1 sm:p-2 rounded-2xl hover:scale-105 transition-all duration-300 flex items-center">
+                  <div
+                    class="glass-card p-1 sm:p-2 rounded-2xl hover:scale-105 transition-all duration-300 flex items-center">
                     <div class="step-number">2</div>
                     <div class="text-xl sm:text-2xl ml-2">📞</div>
                     <div class="font-medium text-sm sm:text-base leading-tight ml-2">Связываемся с вами до 20:00</div>
                   </div>
 
-                  <div class="glass-card p-1 sm:p-2 rounded-2xl hover:scale-105 transition-all duration-300 flex items-center">
+                  <div
+                    class="glass-card p-1 sm:p-2 rounded-2xl hover:scale-105 transition-all duration-300 flex items-center">
                     <div class="step-number">3</div>
                     <div class="text-xl sm:text-2xl ml-2">📏</div>
                     <div class="font-medium text-sm sm:text-base leading-tight ml-2">Выезжаем в согласованное время</div>
                   </div>
 
-                  <div class="glass-card p-1 sm:p-2 rounded-2xl hover:scale-105 transition-all duration-300 flex items-center">
+                  <div
+                    class="glass-card p-1 sm:p-2 rounded-2xl hover:scale-105 transition-all duration-300 flex items-center">
                     <div class="step-number">4</div>
                     <div class="text-xl sm:text-2xl ml-2">📋</div>
-                    <div class="font-medium text-sm sm:text-base leading-tight ml-2">Отправляем замеры и фото на ваш email до 12:00 следующего дня</div>
+                    <div class="font-medium text-sm sm:text-base leading-tight ml-2">Отправляем замеры и фото на ваш
+                      email до 12:00 следующего дня</div>
                   </div>
                 </div>
               </div>
@@ -53,61 +58,186 @@
         </div>
       </div>
     </section>
+    
+    <section class="py-12 bg-white">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl font-bold mb-8 roboto-title">Стандарт замера</h2>
+        
+        <div class="max-w-4xl mx-auto relative standard-slider">
+          <div class="slider-container" :style="{ transform: `translateX(-${activeSlide * 100}%)` }">
+            <div class="slide">
+              <img src="../assets/fonts/1.svg" alt="Стандарт замера 1" class="w-full" loading="lazy">
+            </div>
+            <div class="slide">
+              <img src="../assets/fonts/2.svg" alt="Стандарт замера 2" class="w-full" loading="lazy">
+            </div>
+          </div>
+          
+          <button @click="prevSlide" class="nav-button left-2" :disabled="activeSlide === 0">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+              <path d="M15.75 19.5L8.25 12l7.5-7.5" />
+            </svg>
+          </button>
+          
+          <button @click="nextSlide" class="nav-button right-2" :disabled="activeSlide === 1">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+              <path d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+          </button>
+          
+          <div class="dots">
+            <button @click="activeSlide = 0" class="dot" :class="{ active: activeSlide === 0 }"></button>
+            <button @click="activeSlide = 1" class="dot" :class="{ active: activeSlide === 1 }"></button>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
-import OrderForm from '@/components/OrderForm.vue'
+  import { ref, reactive } from 'vue'
+  import OrderForm from '@/components/OrderForm.vue'
 
-const title = ref('Профессиональные замеры помещений для вашего проекта.')
+  const title = ref('Профессиональные замеры помещений для вашего проекта.')
+  const activeSlide = ref(0)
 
-const form = reactive({
-  city: '',
-  address: '',
-  selectedType: '',
-  date: '',
-  selectedOptions: {
-    'Кухня': 0,
-    'Шкаф': 0,
-    'Гардероб': 0,
-    'СУ (1 элемент)': 0,
-    'Комната': 0,
-    'Кабинет': 0,
-    'Переговорная': 0,
-    'Санузел': 0,
-    'Коридор': 0,
-    'Холл': 0
-  },
-  area: 0,
-  clientName: '',
-  clientPhone: '',
-  distance: 0,
-  urgent: false,
-  selectedTimeInterval: '',
-  selectedTime: '',
-  comment: '',
-  firmName:'',
-  managerEmail:'',
-  managerPhone:''
-});
+  function prevSlide() {
+    if (activeSlide.value > 0) {
+      activeSlide.value--
+    }
+  }
+
+  function nextSlide() {
+    if (activeSlide.value < 1) {
+      activeSlide.value++
+    }
+  }
+
+  const form = reactive({
+    city: '',
+    address: '',
+    selectedType: '',
+    date: '',
+    selectedOptions: {
+      'Кухня': 0,
+      'Шкаф': 0,
+      'Гардероб': 0,
+      'СУ (1 элемент)': 0,
+      'Комната': 0,
+      'Кабинет': 0,
+      'Переговорная': 0,
+      'Санузел': 0,
+      'Коридор': 0,
+      'Холл': 0
+    },
+    area: 0,
+    clientName: '',
+    clientPhone: '',
+    distance: 0,
+    urgent: false,
+    selectedTimeInterval: '',
+    selectedTime: '',
+    comment: '',
+    firmName: '',
+    managerEmail: '',
+    managerPhone: ''
+  });
 </script>
 
 <style scoped>
-.step-number {
-  min-width: 32px;
-  min-height: 32px;
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 600;
-  font-size: 14px;
-  box-shadow: 0 2px 10px rgba(59, 130, 246, 0.3);
-  border: 2px solid rgba(255, 255, 255, 0.4);
-}
+  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+  
+  .step-number {
+    min-width: 32px;
+    min-height: 32px;
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: 0 2px 10px rgba(59, 130, 246, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+  }
+  
+  .bg-white {
+    background: none;
+  }
+  
+  .roboto-title {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+  }
+  
+  .standard-slider {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    background: transparent;
+  }
+  
+  .slider-container {
+    display: flex;
+    width: 100%;
+    transition: transform 0.3s ease;
+  }
+  
+  .slide {
+    flex: 0 0 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .nav-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.8);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    color: #333;
+  }
+  
+  .nav-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .dots {
+    position: absolute;
+    bottom: 16px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.2);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  
+  .dot.active {
+    background: #3b82f6;
+    transform: scale(1.2);
+  }
 </style>
