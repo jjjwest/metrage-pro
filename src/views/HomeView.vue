@@ -64,7 +64,7 @@
         <h2 class="text-3xl font-bold mb-8 roboto-title">Стандарт замера</h2>
         
         <div class="max-w-4xl mx-auto relative standard-slider">
-          <div class="slider-container" :style="{ transform: `translateX(-${activeSlide * 100}%)` }">
+          <div class="slider-container" :style="{ transform: `translateX(-${activeSlideStandart * 100}%)` }">
             <div class="slide">
               <img src="../assets/fonts/1.svg" alt="Стандарт замера 1" class="w-full" loading="lazy">
             </div>
@@ -73,21 +73,57 @@
             </div>
           </div>
           
-          <button @click="prevSlide" class="nav-button left-2" :disabled="activeSlide === 0">
+          <button @click="prevSlideStandart" class="nav-button left-2" :disabled="activeSlideStandart === 0">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
               <path d="M15.75 19.5L8.25 12l7.5-7.5" />
             </svg>
           </button>
           
-          <button @click="nextSlide" class="nav-button right-2" :disabled="activeSlide === 1">
+          <button @click="nextSlideStandart" class="nav-button right-2" :disabled="activeSlideStandart === 1">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
               <path d="M8.25 4.5l7.5 7.5-7.5 7.5" />
             </svg>
           </button>
           
           <div class="dots">
-            <button @click="activeSlide = 0" class="dot" :class="{ active: activeSlide === 0 }"></button>
-            <button @click="activeSlide = 1" class="dot" :class="{ active: activeSlide === 1 }"></button>
+            <button @click="activeSlideStandart = 0" class="dot" :class="{ active: activeSlideStandart === 0 }"></button>
+            <button @click="activeSlideStandart = 1" class="dot" :class="{ active: activeSlideStandart === 1 }"></button>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section class="py-12 bg-white">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl font-bold mb-8 roboto-title">Примеры наших работ</h2>
+        
+        <div class="max-w-4xl mx-auto relative standard-slider">
+          <div class="slider-container" :style="{ transform: `translateX(-${activeSlideExamples * 100}%)` }">
+            <div class="slide" v-for="(image, index) in exampleImages" :key="index">
+              <img :src="image" :alt="`Пример работы ${index + 1}`" class="w-full h-auto example-image" loading="lazy">
+            </div>
+          </div>
+          
+          <button @click="prevSlideExamples" class="nav-button left-2" :disabled="activeSlideExamples === 0">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+              <path d="M15.75 19.5L8.25 12l7.5-7.5" />
+            </svg>
+          </button>
+          
+          <button @click="nextSlideExamples" class="nav-button right-2" :disabled="activeSlideExamples === exampleImages.length - 1">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+              <path d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+          </button>
+          
+          <div class="dots">
+            <button 
+              v-for="(_, index) in exampleImages" 
+              :key="index"
+              @click="activeSlideExamples = index" 
+              class="dot" 
+              :class="{ active: activeSlideExamples === index }">
+            </button>
           </div>
         </div>
       </div>
@@ -96,23 +132,81 @@
 </template>
 
 <script setup>
-  import { ref, reactive } from 'vue'
+  import { ref, reactive, onMounted, onBeforeUnmount } from 'vue'
   import OrderForm from '@/components/OrderForm.vue'
+  import image1 from '../assets/images/1.png'
+  import image2 from '../assets/images/2.png'
+  import image3 from '../assets/images/3.png'
+  import image4 from '../assets/images/4.png'
+  import image5 from '../assets/images/5.png'
+  import image6 from '../assets/images/6.png'
+  import image7 from '../assets/images/7.png'
 
   const title = ref('Профессиональные замеры помещений для вашего проекта.')
-  const activeSlide = ref(0)
+  const activeSlideStandart = ref(0)
+  const activeSlideExamples = ref(0)
+  let autoplayInterval = null
+  
+  const exampleImages = [
+    image1,
+    image2,
+    image3,
+    image4,
+    image5,
+    image6,
+    image7
+  ]
 
-  function prevSlide() {
-    if (activeSlide.value > 0) {
-      activeSlide.value--
+  function prevSlideStandart() {
+    if (activeSlideStandart.value > 0) {
+      activeSlideStandart.value--
     }
   }
 
-  function nextSlide() {
-    if (activeSlide.value < 1) {
-      activeSlide.value++
+  function nextSlideStandart() {
+    if (activeSlideStandart.value < 1) {
+      activeSlideStandart.value++
     }
   }
+
+  function prevSlideExamples() {
+    if (activeSlideExamples.value > 0) {
+      activeSlideExamples.value--
+    }
+    resetAutoplay()
+  }
+
+  function nextSlideExamples() {
+    if (activeSlideExamples.value < exampleImages.length - 1) {
+      activeSlideExamples.value++
+    } else {
+      activeSlideExamples.value = 0
+    }
+    resetAutoplay()
+  }
+  
+  function startAutoplay() {
+    autoplayInterval = setInterval(() => {
+      if (activeSlideExamples.value < exampleImages.length - 1) {
+        activeSlideExamples.value++
+      } else {
+        activeSlideExamples.value = 0
+      }
+    }, 7000)
+  }
+  
+  function resetAutoplay() {
+    clearInterval(autoplayInterval)
+    startAutoplay()
+  }
+  
+  onMounted(() => {
+    startAutoplay()
+  })
+  
+  onBeforeUnmount(() => {
+    clearInterval(autoplayInterval)
+  })
 
   const form = reactive({
     city: '',
@@ -179,6 +273,7 @@
     overflow: hidden;
     border-radius: 8px;
     background: transparent;
+    margin-bottom: 20px;
   }
   
   .slider-container {
@@ -201,19 +296,33 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.8);
+    background: rgba(59, 130, 246, 0.8);
     border: none;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     z-index: 10;
-    color: #333;
+    color: white;
+    transition: all 0.2s ease;
+  }
+
+  .nav-button:hover {
+    background: rgba(59, 130, 246, 1);
+    transform: translateY(-50%) scale(1.1);
   }
   
   .nav-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+  
+  .nav-button.left-2 {
+    left: 10px;
+  }
+  
+  .nav-button.right-2 {
+    right: 10px;
   }
   
   .dots {
@@ -234,10 +343,51 @@
     border: none;
     padding: 0;
     cursor: pointer;
+    transition: all 0.2s ease;
   }
   
   .dot.active {
     background: #3b82f6;
     transform: scale(1.2);
+  }
+  
+  .example-image {
+    display: block;
+    object-fit: contain;
+    max-height: 600px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin: 0 auto;
+  }
+  
+  @media (max-width: 768px) {
+    .example-image {
+      max-height: 400px;
+    }
+    
+    .nav-button {
+      width: 36px;
+      height: 36px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .example-image {
+      max-height: 300px;
+    }
+    
+    .nav-button {
+      width: 32px;
+      height: 32px;
+    }
+    
+    .dots {
+      bottom: 8px;
+    }
+    
+    .dot {
+      width: 8px;
+      height: 8px;
+    }
   }
 </style>
