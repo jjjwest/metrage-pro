@@ -142,6 +142,10 @@ async function nextStep() {
   if (isValid) {
     if (currentStep.value < totalSteps) {
       currentStep.value++;
+      const formElement = document.querySelector('.glass-form');
+      if (formElement) {
+        formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     } else {
       submitForm();
     }

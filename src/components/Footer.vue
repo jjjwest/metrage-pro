@@ -12,7 +12,7 @@
           </div>
           <p class="text-gray-300 mb-6">Профессиональные замеры помещений в Москве и Московской области</p>
           <div class="social-links flex space-x-4">
-            <!-- Telegram -->
+            
             <a href="#" class="social-icon-wrapper" aria-label="Telegram">
               <div class="social-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -21,7 +21,7 @@
               </div>
             </a>
             
-            <!-- ВК (усовершенствованный дизайн) -->
+            
             <a href="#" class="social-icon-wrapper" aria-label="ВКонтакте">
               <div class="social-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -82,12 +82,12 @@
       </div>
       
       <div class="mt-12 pt-8 border-t border-gray-700/50 text-center">
-        <p class="text-gray-400">&copy; 2023 Metrage.Pro — Профессиональные замеры помещений. Все права защищены.</p>
-        <div class="mt-4 flex justify-center space-x-6">
-          <a href="/privacy-policy" class="text-gray-400 hover:text-gray-300 transition-colors duration-300">Политика конфиденциальности</a>
-          <a href="/cookie-policy" class="text-gray-400 hover:text-gray-300 transition-colors duration-300">Политика использования cookie</a>
-          <a href="/terms" class="text-gray-400 hover:text-gray-300 transition-colors duration-300">Пользовательское соглашение</a>
-        </div>
+      <p class="text-gray-400">&copy; 2023 Metrage.Pro — Профессиональные замеры помещений. Все права защищены.</p>
+      <div class="mt-4 flex justify-center space-x-6">
+        <router-link to="/privacy-policy" class="text-gray-400 hover:text-gray-300 transition-colors duration-300">Политика конфиденциальности</router-link>
+        <router-link to="/cookie-policy" class="text-gray-400 hover:text-gray-300 transition-colors duration-300">Политика использования cookie</router-link>
+        <router-link to="/terms" class="text-gray-400 hover:text-gray-300 transition-colors duration-300">Пользовательское соглашение</router-link>
+      </div>
         <div class="mt-4 text-gray-500 text-sm">
           <p>Дроников Александр Евгеньевич</p>
           <p>Самозанятый / Плательщик налога на профессиональный доход</p>

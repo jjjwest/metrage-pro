@@ -10,6 +10,10 @@ const AboutView = () => import('../views/AboutView.vue');
 const ServicesView = () => import('../views/ServicesView.vue');
 const ContactView = () => import('../views/ContactView.vue');
 const OrderView = () => import('../views/OrderView.vue');
+const Cookie = () => import('../views/Cookie.vue');
+const CookiePolicy = () => import('../views/CookiePolicy.vue');
+const TermsOfService = () => import('../views/TermsOfService.vue');
+const PrivacyPolicy = () => import('../views/PrivacyPolicy.vue');
 
 const routes = [
   {
@@ -54,6 +58,26 @@ const routes = [
     path: '/order',
     name: 'OrderView',
     component: OrderView
+  },
+  {
+    path: '/cookie',
+    name: 'Cookie',
+    component: Cookie
+  },
+  {
+    path: '/cookie-policy',
+    name: 'CookiePolicy',
+    component: CookiePolicy
+  },
+  {
+    path: '/terms',
+    name: 'TermsOfService',
+    component: TermsOfService
+  },
+  {
+    path: '/privacy-policy',
+    name: 'PrivacyPolicy',
+    component: PrivacyPolicy
   }
 ];
 

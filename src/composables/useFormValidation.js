@@ -19,16 +19,10 @@ export const useFormValidation = (form) => {
         address: { required: requiredMsg },
         selectedType: { required: requiredMsg },
         date: { required: requiredMsg },
-        area: {
-            required: form.selectedType === 'Обмер' ? { required: requiredMsg } : {},
-            minValue: form.selectedType === 'Обмер' ? { minValue: minValueMsg(1) } : {}
-        },
+        area: {},
         clientName: {},
         clientPhone: { required: requiredMsg, minLength: minLengthMsg(10) },
-        distance: {
-            required: form.city === "МО" ? { required: helpers.withMessage('Укажите расстояние от МКАД', required) } : {},
-            minValue: form.city === "МО" ? { minValue: minValueMsg(1) } : {}
-        },
+        distance: {},
         firmName: { required: requiredMsg },
         managerEmail: { required: requiredMsg, email: emailMsg },
         managerPhone: { required: requiredMsg, minLength: minLengthMsg(10) },
@@ -47,16 +41,8 @@ export const useFormValidation = (form) => {
             3: ['firmName', 'managerEmail', 'managerPhone']
         }[step] || [];
 
-        if (form.city === "МО" && step === 1) {
-          stepFields.push('distance')
-        }
-
         if (['Квартира', 'Дом', 'Офис'].includes(form.selectedType) && step === 1) {
             stepFields.push('selectedOptions');
-        }
-        
-        if (form.selectedType === "Обмер" && step === 1) {
-            stepFields.push('area');
         }
 
         let isValid = true;

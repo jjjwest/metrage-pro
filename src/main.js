@@ -68,8 +68,39 @@ const router = createRouter({
       meta: {
         title: 'Панель управления | Metrage.Pro'
       }
+    },
+    {
+      path: '/privacy-policy',
+      name: 'privacy',
+      component: () => import('./views/PrivacyPolicy.vue'),
+      meta: {
+        title: 'Политика конфиденциальности | Metrage.Pro',
+        description: 'Политика конфиденциальности Metrage.Pro - информация о том, как мы защищаем ваши данные.'
+      }
+    },
+    {
+      path: '/cookie-policy',
+      name: 'cookie-policy',
+      component: () => import('./views/CookiePolicy.vue'),
+      meta: {
+        title: 'Политика использования cookie | Metrage.Pro',
+        description: 'Информация о том, как Metrage.Pro использует файлы cookie на своем сайте.'
+      }
+    },
+    {
+      path: '/terms',
+      name: 'terms',
+      component: () => import('./views/TermsOfService.vue'),
+      meta: {
+        title: 'Условия использования | Metrage.Pro',
+        description: 'Пользовательское соглашение и условия использования сервиса Metrage.Pro.'
+      }
     }
-  ]
+  ],
+  scrollBehavior(to, from, savedPosition) {
+    
+    return { top: 0 }
+  }
 })
 
 router.beforeEach((to, from, next) => {

@@ -3,16 +3,17 @@
     <MainHeader />
     <router-view></router-view>
     <Footer />
+    <CookieConsent />
   </div>
 </template>
 
 <script setup>
 import MainHeader from './components/MainHeader.vue'
 import Footer from './components/Footer.vue'
+import CookieConsent from './components/CookieConsent.vue'
 </script>
 
 <style>
-
 html, body {
   margin: 0;
   padding: 0;
