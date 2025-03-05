@@ -202,10 +202,55 @@
   
   onMounted(() => {
     startAutoplay()
+    
+    const jsonLdScript = document.createElement('script');
+    jsonLdScript.setAttribute('type', 'application/ld+json');
+    jsonLdScript.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Metrage.Pro",
+      "image": "https://metrage.pro/logo.png",
+      "url": "https://metrage.pro",
+      "telephone": "+79260562903",
+      "email": "dronikov93@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Москва",
+        "addressRegion": "Москва",
+        "addressCountry": "RU"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 55.755826,
+        "longitude": 37.6173
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "opens": "08:00",
+        "closes": "21:00"
+      },
+      "priceRange": "₽₽",
+      "description": "Профессиональные замеры помещений в Москве и Московской области"
+    });
+    document.head.appendChild(jsonLdScript);
   })
   
   onBeforeUnmount(() => {
     clearInterval(autoplayInterval)
+    
+    const jsonLdScript = document.querySelector('script[type="application/ld+json"]');
+    if (jsonLdScript) {
+      jsonLdScript.remove();
+    }
   })
 
   const form = reactive({

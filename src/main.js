@@ -11,40 +11,77 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: HomeView,
+      meta: {
+        title: 'Замеры помещений в Москве и МО | Metrage.Pro',
+        description: 'Профессиональные замеры помещений в Москве и Московской области. Точные обмеры для ремонта и дизайна интерьера.'
+      }
     },
     {
       path: '/services',
       name: 'services',
-      component: () => import('./views/ServicesView.vue')
+      component: () => import('./views/ServicesView.vue'),
+      meta: {
+        title: 'Услуги замеров помещений | Metrage.Pro',
+        description: 'Полный спектр услуг по обмерам помещений в Москве и области. Профессиональные замеры для ремонта, дизайна и строительства.'
+      }
     },
     {
       path: '/about',
       name: 'about',
-      component: () => import('./views/AboutView.vue')
+      component: () => import('./views/AboutView.vue'),
+      meta: {
+        title: 'О нас | Metrage.Pro',
+        description: 'Metrage.Pro - команда профессионалов с многолетним опытом точных обмеров помещений в Москве и Московской области.'
+      }
     },
     {
       path: '/contact',
       name: 'contact',
-      component: () => import('./views/ContactView.vue')
+      component: () => import('./views/ContactView.vue'),
+      meta: {
+        title: 'Контакты | Metrage.Pro',
+        description: 'Свяжитесь с нами для заказа замеров помещений в Москве и Московской области. Телефон, email и форма обратной связи.'
+      }
     },
     {
       path: '/order',
       name: 'order',
-      component: () => import('./views/OrderView.vue')
+      component: () => import('./views/OrderView.vue'),
+      meta: {
+        title: 'Заказать замер помещения | Metrage.Pro',
+        description: 'Оформление заказа на профессиональный замер помещения в Москве и области. Быстро, точно, надежно.'
+      }
     },
     {
       path: '/login',
       name: 'login',
-      component: () => import('./views/Login.vue')
+      component: () => import('./views/Login.vue'),
+      meta: {
+        title: 'Вход в личный кабинет | Metrage.Pro'
+      }
     },
     {
       path: '/dashboard',
       name: 'dashboard',
-      component: () => import('./views/Dashboard.vue')
+      component: () => import('./views/Dashboard.vue'),
+      meta: {
+        title: 'Панель управления | Metrage.Pro'
+      }
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  document.title = to.meta.title || 'Metrage.Pro - Замеры помещений';
+  
+  const metaDescription = document.querySelector('meta[name="description"]');
+  if (metaDescription && to.meta.description) {
+    metaDescription.setAttribute('content', to.meta.description);
+  }
+  
+  next();
+});
 
 const app = createApp(App)
 const pinia = createPinia()
