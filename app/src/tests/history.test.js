@@ -3,6 +3,7 @@ import { createHistory, historyReducer, canUndo, canRedo } from '../store/histor
 import { createInitialState } from '../store/initialState.js';
 import {
   addWall, updateWall, setTool, undo, redo, selectEntity, updateViewport,
+  startDraftWall, updateDraftWall, commitDraftWall, cancelDraftWall,
 } from '../store/actions.js';
 import { TOOLS } from '../constants/index.js';
 
@@ -63,5 +64,26 @@ describe('history', () => {
     const h0 = start();
     const h1 = historyReducer(h0, redo());
     expect(h1).toBe(h0);
+  });
+
+  it('draft start/update/cancel are not recorded in history', () => {
+    let h = start();
+    h = historyReducer(h, setTool(TOOLS.DRAW_WALL));
+    h = historyReducer(h, startDraftWall({ x: 100, y: 100 }));
+    h = historyReducer(h, updateDraftWall({ x: 200, y: 100 }));
+    h = historyReducer(h, cancelDraftWall());
+    expect(h.past).toHaveLength(0);
+  });
+
+  it('COMMIT_DRAFT_WALL is recorded as an undoable structural change', () => {
+    let h = start();
+    h = historyReducer(h, setTool(TOOLS.DRAW_WALL));
+    h = historyReducer(h, startDraftWall({ x: 0, y: 0 }));
+    h = historyReducer(h, updateDraftWall({ x: 1000, y: 0 }));
+    h = historyReducer(h, commitDraftWall());
+    expect(h.past).toHaveLength(1);
+    expect(h.present.walls).toHaveLength(1);
+    h = historyReducer(h, undo());
+    expect(h.present.walls).toHaveLength(0);
   });
 });

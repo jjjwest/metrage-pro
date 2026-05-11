@@ -1,34 +1,36 @@
 import React, { useReducer } from 'react';
 import { createInitialState } from '../store/initialState.js';
 import { historyReducer, createHistory, canUndo, canRedo } from '../store/history.js';
-import { addWall, updateViewport } from '../store/actions.js';
+import { setTool, undo, redo, updateViewport, cancelDraftWall } from '../store/actions.js';
+import { selectDraftWallPreview } from '../store/selectors.js';
+import { TOOLS } from '../constants/index.js';
 import Canvas from '../canvas/Canvas.jsx';
 
-// Seed a single wall so the canvas has something to render until the
-// wall-draw tool exists. Removed in Step 2.
-const SEED_WALLS = [
-  { id: 'seed-1', x1: 0, y1: 0, x2: 3076, y2: 0, thickness: 100, kind: 'wall' },
-  { id: 'seed-2', x1: 3076, y1: 0, x2: 3076, y2: 2400, thickness: 100, kind: 'wall' },
-];
+const DEFAULT_VIEWPORT = { pan: { x: 120, y: 120 }, zoom: 0.2 };
 
-function seededInit() {
+function init() {
   const s = createInitialState();
-  const withWalls = SEED_WALLS.reduce(
-    (acc, w) => ({ ...acc, walls: [...acc.walls, w] }),
-    s,
-  );
-  // Pan so the (0,0) corner sits ~80px from top-left and shrink zoom to fit.
-  return { ...withWalls, ui: { ...withWalls.ui, pan: { x: 80, y: 80 }, zoom: 0.15 } };
+  return createHistory({
+    ...s,
+    ui: { ...s.ui, pan: DEFAULT_VIEWPORT.pan, zoom: DEFAULT_VIEWPORT.zoom },
+  });
 }
 
+const buttonStyle = (active) => ({
+  padding: '6px 12px',
+  fontSize: 13,
+  border: '1px solid #ccc',
+  background: active ? '#222' : '#fff',
+  color: active ? '#fff' : '#222',
+  borderRadius: 6,
+  cursor: 'pointer',
+});
+
 export default function App() {
-  const [history, dispatch] = useReducer(
-    historyReducer,
-    undefined,
-    () => createHistory(seededInit()),
-  );
+  const [history, dispatch] = useReducer(historyReducer, undefined, init);
   const s = history.present;
   const viewport = { pan: s.ui.pan, zoom: s.ui.zoom };
+  const draftPreview = selectDraftWallPreview(s);
 
   return (
     <div style={{
@@ -43,36 +45,83 @@ export default function App() {
         borderBottom: '1px solid #e5e5e5',
         background: '#fff',
         display: 'flex',
-        gap: 16,
-        alignItems: 'baseline',
+        gap: 12,
+        alignItems: 'center',
         flexShrink: 0,
         fontSize: 13,
       }}>
         <h1 style={{ margin: 0, fontSize: 16 }}>metrage.pro</h1>
-        <span style={{ color: '#888' }}>
+
+        <div role="toolbar" aria-label="Инструменты" style={{ display: 'flex', gap: 4 }}>
+          <button
+            type="button"
+            style={buttonStyle(s.ui.tool === TOOLS.SELECT)}
+            onClick={() => dispatch(setTool(TOOLS.SELECT))}
+          >
+            Выбор
+          </button>
+          <button
+            type="button"
+            style={buttonStyle(s.ui.tool === TOOLS.DRAW_WALL)}
+            onClick={() => dispatch(setTool(TOOLS.DRAW_WALL))}
+          >
+            Стена
+          </button>
+        </div>
+
+        <div role="toolbar" aria-label="История" style={{ display: 'flex', gap: 4 }}>
+          <button
+            type="button"
+            style={buttonStyle(false)}
+            disabled={!canUndo(history)}
+            onClick={() => dispatch(undo())}
+          >
+            ⟲ Undo
+          </button>
+          <button
+            type="button"
+            style={buttonStyle(false)}
+            disabled={!canRedo(history)}
+            onClick={() => dispatch(redo())}
+          >
+            ⟳ Redo
+          </button>
+        </div>
+
+        <span style={{ color: '#888', marginLeft: 'auto' }}>
           walls: {s.walls.length} · zoom: {viewport.zoom.toFixed(3)} ·
-          pan: {Math.round(viewport.pan.x)},{Math.round(viewport.pan.y)} ·
-          undo: {canUndo(history) ? 'y' : 'n'} / redo: {canRedo(history) ? 'y' : 'n'}
+          pan: {Math.round(viewport.pan.x)},{Math.round(viewport.pan.y)}
+          {draftPreview && ' · drafting'}
         </span>
+
+        {draftPreview && (
+          <button
+            type="button"
+            style={buttonStyle(false)}
+            onClick={() => dispatch(cancelDraftWall())}
+          >
+            Отменить
+          </button>
+        )}
+
         <button
           type="button"
-          onClick={() => dispatch(updateViewport({ pan: { x: 80, y: 80 }, zoom: 0.15 }))}
-          style={{ marginLeft: 'auto', fontSize: 12 }}
+          style={buttonStyle(false)}
+          onClick={() => dispatch(updateViewport({
+            pan: DEFAULT_VIEWPORT.pan, zoom: DEFAULT_VIEWPORT.zoom,
+          }))}
         >
           Reset view
         </button>
-        <button
-          type="button"
-          onClick={() => dispatch(addWall({
-            x1: 0, y1: 2400, x2: 3076, y2: 2400,
-          }))}
-          style={{ fontSize: 12 }}
-        >
-          + demo wall
-        </button>
       </header>
       <div style={{ flex: 1, position: 'relative', minHeight: 0 }}>
-        <Canvas walls={s.walls} viewport={viewport} dispatch={dispatch} />
+        <Canvas
+          walls={s.walls}
+          viewport={viewport}
+          tool={s.ui.tool}
+          draftPreview={draftPreview}
+          dispatch={dispatch}
+        />
       </div>
     </div>
   );

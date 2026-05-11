@@ -5,6 +5,11 @@ export const DEFAULT_WALL_THICKNESS = 100;
 export const SNAP_ANGLE_INCREMENT_RAD = Math.PI / 4;
 export const SNAP_DISTANCE_MM = 50;
 
+// Tolerance for tolerant angle snapping (only snaps if pointer angle is within this).
+export const ANGLE_SNAP_TOLERANCE_RAD = (5 * Math.PI) / 180;
+// Tolerance for X/Y alignment guides to existing wall nodes.
+export const ALIGNMENT_TOLERANCE_MM = 10;
+
 export const HITBOX_PX = 44;
 
 export const ZOOM_MIN = 0.05;

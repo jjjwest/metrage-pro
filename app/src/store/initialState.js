@@ -21,6 +21,7 @@ export function createInitialState() {
       pan: { x: 0, y: 0 },
       zoom: 1,
       mode: UI_MODES.PLAN,
+      draftWall: null,
     },
   };
 }

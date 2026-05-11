@@ -27,6 +27,11 @@ export const ActionTypes = Object.freeze({
 
   ADD_TEMPLATE_ENTITIES: 'ADD_TEMPLATE_ENTITIES',
 
+  START_DRAFT_WALL: 'START_DRAFT_WALL',
+  UPDATE_DRAFT_WALL: 'UPDATE_DRAFT_WALL',
+  COMMIT_DRAFT_WALL: 'COMMIT_DRAFT_WALL',
+  CANCEL_DRAFT_WALL: 'CANCEL_DRAFT_WALL',
+
   UNDO: 'UNDO',
   REDO: 'REDO',
 
@@ -67,6 +72,11 @@ export const updateViewport = (patch) => ({ type: ActionTypes.UPDATE_VIEWPORT, p
 
 export const addTemplateEntities = (entities) =>
   ({ type: ActionTypes.ADD_TEMPLATE_ENTITIES, entities });
+
+export const startDraftWall = (point) => ({ type: ActionTypes.START_DRAFT_WALL, point });
+export const updateDraftWall = (point) => ({ type: ActionTypes.UPDATE_DRAFT_WALL, point });
+export const commitDraftWall = () => ({ type: ActionTypes.COMMIT_DRAFT_WALL });
+export const cancelDraftWall = () => ({ type: ActionTypes.CANCEL_DRAFT_WALL });
 
 export const undo = () => ({ type: ActionTypes.UNDO });
 export const redo = () => ({ type: ActionTypes.REDO });

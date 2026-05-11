@@ -1,5 +1,6 @@
 import { distance, angle, pointAtDistance } from '../core/geometry.js';
 import { toScreen } from '../core/coords.js';
+import { computeDraftWallEndpoint } from '../core/snapping.js';
 
 export const selectWalls = (s) => s.walls;
 export const selectOpenings = (s) => s.openings;
@@ -11,6 +12,28 @@ export const selectTool = (s) => s.ui.tool;
 export const selectSelectedIds = (s) => s.ui.selectedIds;
 export const selectPrimarySelectionId = (s) => s.ui.primarySelectionId;
 export const selectViewport = (s) => ({ pan: s.ui.pan, zoom: s.ui.zoom });
+export const selectDraftWall = (s) => s.ui.draftWall;
+
+// Flattened list of every wall endpoint as a snappable node.
+export function selectWallNodes(s) {
+  const out = [];
+  for (const w of s.walls) {
+    out.push({ x: w.x1, y: w.y1, wallId: w.id, end: 'a' });
+    out.push({ x: w.x2, y: w.y2, wallId: w.id, end: 'b' });
+  }
+  return out;
+}
+
+// Snapped + aligned preview for the in-flight draft wall.
+// Returns { start, end, guides } or null when no draft exists.
+// Guides are computed here so persistent state never carries them.
+export function selectDraftWallPreview(s) {
+  const d = s.ui.draftWall;
+  if (!d) return null;
+  const nodes = selectWallNodes(s);
+  const { aligned, guides } = computeDraftWallEndpoint(d.start, d.current, nodes);
+  return { start: d.start, end: aligned, guides };
+}
 
 export const selectWallById = (s, id) => s.walls.find((w) => w.id === id) ?? null;
 export const selectOpeningById = (s, id) => s.openings.find((o) => o.id === id) ?? null;

@@ -1,6 +1,17 @@
 import { ActionTypes } from './actions.js';
 import { newId } from '../core/ids.js';
-import { DEFAULT_WALL_THICKNESS } from '../constants/index.js';
+import { distance } from '../core/geometry.js';
+import { computeDraftWallEndpoint } from '../core/snapping.js';
+import { DEFAULT_WALL_THICKNESS, TOOLS } from '../constants/index.js';
+
+function collectWallNodes(walls) {
+  const out = [];
+  for (const w of walls) {
+    out.push({ x: w.x1, y: w.y1, wallId: w.id, end: 'a' });
+    out.push({ x: w.x2, y: w.y2, wallId: w.id, end: 'b' });
+  }
+  return out;
+}
 
 function ensureId(entity) {
   return entity.id ? entity : { ...entity, id: newId() };
@@ -70,8 +81,58 @@ export function reducer(state, action) {
     case ActionTypes.DELETE_DIMENSION:
       return { ...state, dimensions: removeById(state.dimensions, action.id) };
 
-    case ActionTypes.SET_TOOL:
-      return { ...state, ui: { ...state.ui, tool: action.tool } };
+    case ActionTypes.SET_TOOL: {
+      // Leaving the draw-wall tool always discards a pending draft so the
+      // ghost preview never lingers in another mode.
+      const draftWall = action.tool === TOOLS.DRAW_WALL ? state.ui.draftWall : null;
+      return { ...state, ui: { ...state.ui, tool: action.tool, draftWall } };
+    }
+
+    case ActionTypes.START_DRAFT_WALL:
+      return {
+        ...state,
+        ui: {
+          ...state.ui,
+          draftWall: { start: action.point, current: action.point },
+        },
+      };
+
+    case ActionTypes.UPDATE_DRAFT_WALL: {
+      const d = state.ui.draftWall;
+      if (!d) return state;
+      return {
+        ...state,
+        ui: { ...state.ui, draftWall: { ...d, current: action.point } },
+      };
+    }
+
+    case ActionTypes.CANCEL_DRAFT_WALL:
+      if (!state.ui.draftWall) return state;
+      return { ...state, ui: { ...state.ui, draftWall: null } };
+
+    case ActionTypes.COMMIT_DRAFT_WALL: {
+      const d = state.ui.draftWall;
+      if (!d) return state;
+      const nodes = collectWallNodes(state.walls);
+      const { aligned } = computeDraftWallEndpoint(d.start, d.current, nodes);
+      // Discard zero-length draft (sub-mm); just clear the draft.
+      if (distance(d.start, aligned) < 1) {
+        return { ...state, ui: { ...state.ui, draftWall: null } };
+      }
+      const wall = ensureId({
+        kind: 'wall',
+        thickness: DEFAULT_WALL_THICKNESS,
+        x1: d.start.x,
+        y1: d.start.y,
+        x2: aligned.x,
+        y2: aligned.y,
+      });
+      return {
+        ...state,
+        walls: [...state.walls, wall],
+        ui: { ...state.ui, draftWall: null },
+      };
+    }
 
     case ActionTypes.SELECT_ENTITY: {
       if (action.id == null) {

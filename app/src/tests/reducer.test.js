@@ -6,6 +6,7 @@ import {
   addOpening, addSymbol, bindSymbolToWall,
   setTool, selectEntity, clearSelection, updateViewport,
   addTemplateEntities,
+  startDraftWall, updateDraftWall, commitDraftWall, cancelDraftWall,
 } from '../store/actions.js';
 import { TOOLS } from '../constants/index.js';
 
@@ -97,6 +98,77 @@ describe('reducer.UPDATE_VIEWPORT', () => {
     const s = reducer(createInitialState(), updateViewport({ zoom: 2, pan: { x: 50, y: 50 } }));
     expect(s.ui.zoom).toBe(2);
     expect(s.ui.pan).toEqual({ x: 50, y: 50 });
+  });
+});
+
+describe('reducer.draft wall transitions', () => {
+  it('START_DRAFT_WALL sets both start and current to the same point', () => {
+    const s = reducer(createInitialState(), startDraftWall({ x: 100, y: 200 }));
+    expect(s.ui.draftWall).toEqual({
+      start: { x: 100, y: 200 },
+      current: { x: 100, y: 200 },
+    });
+  });
+  it('UPDATE_DRAFT_WALL changes current and preserves start', () => {
+    let s = reducer(createInitialState(), startDraftWall({ x: 0, y: 0 }));
+    s = reducer(s, updateDraftWall({ x: 500, y: 0 }));
+    expect(s.ui.draftWall.start).toEqual({ x: 0, y: 0 });
+    expect(s.ui.draftWall.current).toEqual({ x: 500, y: 0 });
+  });
+  it('UPDATE_DRAFT_WALL is a no-op when no draft exists', () => {
+    const s0 = createInitialState();
+    const s1 = reducer(s0, updateDraftWall({ x: 1, y: 1 }));
+    expect(s1).toBe(s0);
+  });
+  it('CANCEL_DRAFT_WALL clears draft', () => {
+    let s = reducer(createInitialState(), startDraftWall({ x: 1, y: 1 }));
+    s = reducer(s, cancelDraftWall());
+    expect(s.ui.draftWall).toBeNull();
+  });
+  it('COMMIT_DRAFT_WALL commits a wall from start to snapped+aligned end', () => {
+    let s = reducer(createInitialState(), startDraftWall({ x: 0, y: 0 }));
+    // Slightly off horizontal — should snap to y=0 via 45° angle snap (~2°).
+    s = reducer(s, updateDraftWall({ x: 3000, y: 50 }));
+    s = reducer(s, commitDraftWall());
+    expect(s.walls).toHaveLength(1);
+    expect(s.walls[0].x1).toBe(0);
+    expect(s.walls[0].y1).toBe(0);
+    expect(s.walls[0].y2).toBeCloseTo(0);
+    expect(s.walls[0].x2).toBeCloseTo(Math.hypot(3000, 50));
+    expect(s.ui.draftWall).toBeNull();
+  });
+  it('COMMIT_DRAFT_WALL aligns to existing node X', () => {
+    let s = reducer(createInitialState(), addWall({
+      id: 'w1', x1: 1000, y1: 0, x2: 1000, y2: 2400,
+    }));
+    s = reducer(s, startDraftWall({ x: 0, y: 1000 }));
+    s = reducer(s, updateDraftWall({ x: 1003, y: 1005 })); // raw end near (1000, ...) node
+    s = reducer(s, commitDraftWall());
+    const fresh = s.walls.find((w) => w.id !== 'w1');
+    expect(fresh.x2).toBe(1000);
+  });
+  it('COMMIT_DRAFT_WALL discards zero-length drafts without adding a wall', () => {
+    let s = reducer(createInitialState(), startDraftWall({ x: 500, y: 500 }));
+    s = reducer(s, commitDraftWall());
+    expect(s.walls).toHaveLength(0);
+    expect(s.ui.draftWall).toBeNull();
+  });
+  it('COMMIT_DRAFT_WALL is a no-op when no draft exists', () => {
+    const s0 = createInitialState();
+    const s1 = reducer(s0, commitDraftWall());
+    expect(s1).toBe(s0);
+  });
+  it('SET_TOOL away from drawWall clears a pending draft', () => {
+    let s = reducer(createInitialState(), setTool(TOOLS.DRAW_WALL));
+    s = reducer(s, startDraftWall({ x: 100, y: 100 }));
+    s = reducer(s, setTool(TOOLS.SELECT));
+    expect(s.ui.draftWall).toBeNull();
+  });
+  it('SET_TOOL to drawWall preserves an existing draft', () => {
+    let s = reducer(createInitialState(), setTool(TOOLS.DRAW_WALL));
+    s = reducer(s, startDraftWall({ x: 100, y: 100 }));
+    s = reducer(s, setTool(TOOLS.DRAW_WALL));
+    expect(s.ui.draftWall).not.toBeNull();
   });
 });
 

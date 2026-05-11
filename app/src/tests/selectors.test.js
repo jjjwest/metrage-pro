@@ -3,6 +3,7 @@ import { createInitialState } from '../store/initialState.js';
 import { reducer } from '../store/reducer.js';
 import {
   addWall, addSymbol, addOpening, addDimension, updateViewport,
+  startDraftWall, updateDraftWall,
 } from '../store/actions.js';
 import {
   selectWallLength, selectWallAngle,
@@ -10,6 +11,8 @@ import {
   selectOpeningWorldSegment,
   selectDimensionDisplayValue,
   selectWallScreenSegment,
+  selectWallNodes,
+  selectDraftWallPreview,
 } from '../store/selectors.js';
 
 const buildState = (...actions) => actions.reduce((s, a) => reducer(s, a), createInitialState());
@@ -102,6 +105,43 @@ describe('selectors.selectDimensionDisplayValue', () => {
       }),
     );
     expect(selectDimensionDisplayValue(s, 'd1')).toBe(3076);
+  });
+});
+
+describe('selectors.selectWallNodes', () => {
+  it('flattens both endpoints of every wall', () => {
+    const s = buildState(
+      addWall({ id: 'w1', x1: 0, y1: 0, x2: 3076, y2: 0 }),
+      addWall({ id: 'w2', x1: 3076, y1: 0, x2: 3076, y2: 2400 }),
+    );
+    const nodes = selectWallNodes(s);
+    expect(nodes).toHaveLength(4);
+    expect(nodes).toContainEqual({ x: 0, y: 0, wallId: 'w1', end: 'a' });
+    expect(nodes).toContainEqual({ x: 3076, y: 2400, wallId: 'w2', end: 'b' });
+  });
+});
+
+describe('selectors.selectDraftWallPreview', () => {
+  it('returns null when no draft is active', () => {
+    expect(selectDraftWallPreview(createInitialState())).toBeNull();
+  });
+  it('returns start, snapped end, and no guides for an isolated draft', () => {
+    let s = buildState(startDraftWall({ x: 0, y: 0 }));
+    s = reducer(s, updateDraftWall({ x: 1000, y: 2 })); // ~0.1° → snaps to 0°
+    const p = selectDraftWallPreview(s);
+    expect(p.start).toEqual({ x: 0, y: 0 });
+    expect(p.end.y).toBeCloseTo(0);
+    expect(p.guides).toEqual([]);
+  });
+  it('emits alignment guides when preview endpoint matches an existing node', () => {
+    let s = buildState(
+      addWall({ id: 'w1', x1: 1000, y1: 0, x2: 1000, y2: 2400 }),
+      startDraftWall({ x: 0, y: 1000 }),
+    );
+    s = reducer(s, updateDraftWall({ x: 1004, y: 1003 })); // close to node (1000, 0) on X
+    const p = selectDraftWallPreview(s);
+    expect(p.end.x).toBe(1000);
+    expect(p.guides.some((g) => g.axis === 'x' && g.value === 1000)).toBe(true);
   });
 });
 
