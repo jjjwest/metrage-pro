@@ -25,6 +25,23 @@ describe('coords.zoomAtPoint', () => {
     expect(worldAfter.y).toBeCloseTo(worldBefore.y);
     expect(after.zoom).toBe(2);
   });
+  it('keeps the anchor stable even when starting pan is non-zero', () => {
+    const before = { pan: { x: 80, y: 80 }, zoom: 0.15 };
+    const anchor = { x: 250, y: 180 };
+    const worldBefore = toWorld(anchor, before);
+    const after = zoomAtPoint(before, anchor, 1.5);
+    const worldAfter = toWorld(anchor, after);
+    expect(worldAfter.x).toBeCloseTo(worldBefore.x);
+    expect(worldAfter.y).toBeCloseTo(worldBefore.y);
+    expect(after.zoom).toBeCloseTo(0.15 * 1.5);
+  });
+  it('is an identity when factor is exactly 1', () => {
+    const before = { pan: { x: 42, y: -17 }, zoom: 0.5 };
+    const after = zoomAtPoint(before, { x: 100, y: 100 }, 1);
+    expect(after.zoom).toBeCloseTo(before.zoom);
+    expect(after.pan.x).toBeCloseTo(before.pan.x);
+    expect(after.pan.y).toBeCloseTo(before.pan.y);
+  });
   it('respects max zoom clamp', () => {
     const v = { pan: { x: 0, y: 0 }, zoom: 1 };
     expect(zoomAtPoint(v, { x: 0, y: 0 }, 10000).zoom).toBe(50);
