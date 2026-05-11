@@ -14,6 +14,12 @@ export const selectPrimarySelectionId = (s) => s.ui.primarySelectionId;
 export const selectViewport = (s) => ({ pan: s.ui.pan, zoom: s.ui.zoom });
 export const selectDraftWall = (s) => s.ui.draftWall;
 
+export function selectSelectedWall(s) {
+  const id = s.ui.primarySelectionId;
+  if (!id) return null;
+  return s.walls.find((w) => w.id === id) ?? null;
+}
+
 // Flattened list of every wall endpoint as a snappable node.
 export function selectWallNodes(s) {
   const out = [];

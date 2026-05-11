@@ -2,7 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { createHistory, historyReducer, canUndo, canRedo } from '../store/history.js';
 import { createInitialState } from '../store/initialState.js';
 import {
-  addWall, updateWall, setTool, undo, redo, selectEntity, updateViewport,
+  addWall, updateWall, updateWallLength, setTool, undo, redo,
+  selectEntity, updateViewport,
   startDraftWall, updateDraftWall, commitDraftWall, cancelDraftWall,
 } from '../store/actions.js';
 import { TOOLS } from '../constants/index.js';
@@ -73,6 +74,17 @@ describe('history', () => {
     h = historyReducer(h, updateDraftWall({ x: 200, y: 100 }));
     h = historyReducer(h, cancelDraftWall());
     expect(h.past).toHaveLength(0);
+  });
+
+  it('UPDATE_WALL_LENGTH is recorded and undoable', () => {
+    let h = start();
+    h = historyReducer(h, addWall({ id: 'w1', x1: 0, y1: 0, x2: 3000, y2: 0 }));
+    h = historyReducer(h, updateWallLength('w1', 3150));
+    expect(h.present.walls[0].x2).toBeCloseTo(3150);
+    h = historyReducer(h, undo());
+    expect(h.present.walls[0].x2).toBe(3000);
+    h = historyReducer(h, redo());
+    expect(h.present.walls[0].x2).toBeCloseTo(3150);
   });
 
   it('COMMIT_DRAFT_WALL is recorded as an undoable structural change', () => {

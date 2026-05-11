@@ -6,8 +6,10 @@ import {
   updateDraftWall,
   commitDraftWall,
   cancelDraftWall,
+  selectEntity,
+  clearSelection,
 } from '../store/actions.js';
-import { TOOLS } from '../constants/index.js';
+import { TOOLS, HITBOX_PX } from '../constants/index.js';
 
 const WHEEL_ZOOM_RATE = 0.005;
 const WHEEL_DELTA_CLAMP = 50;
@@ -16,15 +18,24 @@ const WALL_STROKE_RATIO = 0.01;
 const TAP_SLOP_PX = 6;
 const STROKE_COMMIT_THRESHOLD_PX = 24;
 
-// Pure presentation + viewport gestures + drawWall taps. All snap/alignment math
-// is performed upstream (selectors / reducer); Canvas only renders the props it
-// receives and dispatches deterministic actions.
-export default function Canvas({ walls, viewport, dispatch, tool, draftPreview }) {
+// Pure presentation + viewport gestures + drawWall taps + select taps.
+// All snap/alignment math is performed upstream (selectors / reducer);
+// Canvas only renders the props it receives and dispatches deterministic actions.
+export default function Canvas({
+  walls,
+  viewport,
+  dispatch,
+  tool,
+  draftPreview,
+  primarySelectionId,
+}) {
   const containerRef = useRef(null);
   const pointersRef = useRef(new Map());
   const lastPinchRef = useRef(null);
   const downPosRef = useRef(null);
   const startedDraftRef = useRef(false);
+  const downWallIdRef = useRef(null);
+  const gestureMultiTouchRef = useRef(false);
 
   const toLocal = (e) => {
     const rect = containerRef.current.getBoundingClientRect();
@@ -41,6 +52,14 @@ export default function Canvas({ walls, viewport, dispatch, tool, draftPreview }
     pointersRef.current.set(e.pointerId, local);
     downPosRef.current = local;
     lastPinchRef.current = null;
+
+    if (pointersRef.current.size === 1) {
+      gestureMultiTouchRef.current = false;
+      const wallEl = e.target.closest && e.target.closest('[data-wall-id]');
+      downWallIdRef.current = wallEl ? wallEl.getAttribute('data-wall-id') : null;
+    } else {
+      gestureMultiTouchRef.current = true;
+    }
 
     // A second pointer landing during a fresh draft means the user is pinching,
     // not drawing. Drop the just-started draft so the gesture becomes pure
@@ -69,7 +88,6 @@ export default function Canvas({ walls, viewport, dispatch, tool, draftPreview }
   const handlePointerMove = (e) => {
     const pointers = pointersRef.current;
 
-    // Hover (mouse / Apple Pencil) — no button pressed and not a tracked pointer.
     if (!pointers.has(e.pointerId)) {
       if (tool === TOOLS.DRAW_WALL && draftPreview && e.buttons === 0) {
         dispatchDraftMove(toLocal(e));
@@ -117,23 +135,34 @@ export default function Canvas({ walls, viewport, dispatch, tool, draftPreview }
     pointersRef.current.delete(e.pointerId);
     if (pointersRef.current.size < 2) lastPinchRef.current = null;
 
-    if (tool === TOOLS.DRAW_WALL && draftPreview && downPosRef.current) {
-      const dx = local.x - downPosRef.current.x;
-      const dy = local.y - downPosRef.current.y;
-      const movePx = Math.hypot(dx, dy);
+    const movePx = downPosRef.current
+      ? Math.hypot(local.x - downPosRef.current.x, local.y - downPosRef.current.y)
+      : Infinity;
+    const cleanTap = pointersRef.current.size === 0
+      && !gestureMultiTouchRef.current
+      && movePx < TAP_SLOP_PX;
 
-      if (!startedDraftRef.current && movePx < TAP_SLOP_PX) {
-        // Second tap on existing draft → commit at current preview position.
+    if (tool === TOOLS.SELECT && cleanTap) {
+      const wallId = downWallIdRef.current;
+      if (wallId) dispatch(selectEntity(wallId));
+      else dispatch(clearSelection());
+    }
+
+    if (tool === TOOLS.DRAW_WALL && draftPreview && downPosRef.current) {
+      if (!startedDraftRef.current && cleanTap) {
         dispatch(commitDraftWall());
       } else if (startedDraftRef.current && movePx >= STROKE_COMMIT_THRESHOLD_PX) {
-        // One-stroke draw: tap-drag-release.
         dispatch(updateDraftWall(toWorld(local, viewport)));
         dispatch(commitDraftWall());
       }
     }
 
     downPosRef.current = null;
-    if (pointersRef.current.size === 0) startedDraftRef.current = false;
+    downWallIdRef.current = null;
+    if (pointersRef.current.size === 0) {
+      startedDraftRef.current = false;
+      gestureMultiTouchRef.current = false;
+    }
   };
 
   useEffect(() => {
@@ -172,18 +201,29 @@ export default function Canvas({ walls, viewport, dispatch, tool, draftPreview }
         {walls.map((w) => {
           const a = toScreen({ x: w.x1, y: w.y1 }, viewport);
           const b = toScreen({ x: w.x2, y: w.y2 }, viewport);
-          const strokePx = Math.max(
+          const selected = primarySelectionId === w.id;
+          const visualStroke = Math.max(
             MIN_WALL_STROKE_PX,
             (w.thickness ?? 100) * viewport.zoom * WALL_STROKE_RATIO,
           );
+          const hitboxStroke = Math.max(HITBOX_PX, visualStroke + 8);
           return (
-            <line
-              key={w.id}
-              x1={a.x} y1={a.y} x2={b.x} y2={b.y}
-              stroke="#222"
-              strokeWidth={strokePx}
-              strokeLinecap="round"
-            />
+            <g key={w.id}>
+              <line
+                x1={a.x} y1={a.y} x2={b.x} y2={b.y}
+                stroke={selected ? '#3b82f6' : '#222'}
+                strokeWidth={selected ? visualStroke + 2 : visualStroke}
+                strokeLinecap="round"
+              />
+              <line
+                x1={a.x} y1={a.y} x2={b.x} y2={b.y}
+                stroke="transparent"
+                strokeWidth={hitboxStroke}
+                strokeLinecap="round"
+                data-wall-id={w.id}
+                style={{ cursor: tool === TOOLS.SELECT ? 'pointer' : undefined }}
+              />
+            </g>
           );
         })}
 

@@ -1,6 +1,7 @@
 export const SCHEMA_VERSION = 1;
 
 export const DEFAULT_WALL_THICKNESS = 100;
+export const MIN_WALL_LENGTH_MM = 10;
 
 export const SNAP_ANGLE_INCREMENT_RAD = Math.PI / 4;
 export const SNAP_DISTANCE_MM = 50;

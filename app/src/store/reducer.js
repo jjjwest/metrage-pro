@@ -1,8 +1,8 @@
 import { ActionTypes } from './actions.js';
 import { newId } from '../core/ids.js';
-import { distance } from '../core/geometry.js';
+import { distance, pointAtDistance } from '../core/geometry.js';
 import { computeDraftWallEndpoint } from '../core/snapping.js';
-import { DEFAULT_WALL_THICKNESS, TOOLS } from '../constants/index.js';
+import { DEFAULT_WALL_THICKNESS, MIN_WALL_LENGTH_MM, TOOLS } from '../constants/index.js';
 
 function collectWallNodes(walls) {
   const out = [];
@@ -37,6 +37,30 @@ export function reducer(state, action) {
     }
     case ActionTypes.UPDATE_WALL:
       return { ...state, walls: patchById(state.walls, action.id, action.patch) };
+    case ActionTypes.UPDATE_WALL_LENGTH: {
+      const w = state.walls.find((x) => x.id === action.id);
+      if (!w) return state;
+      if (!Number.isFinite(action.length) || action.length < MIN_WALL_LENGTH_MM) return state;
+      const start = { x: w.x1, y: w.y1 };
+      const oldEnd = { x: w.x2, y: w.y2 };
+      // Direction is undefined for a zero-length wall; nothing meaningful to do.
+      if (distance(start, oldEnd) === 0) return state;
+      const newEnd = pointAtDistance(start, oldEnd, action.length);
+      const walls = state.walls.map((other) => {
+        if (other.id === w.id) return { ...other, x2: newEnd.x, y2: newEnd.y };
+        // Connectivity: any other wall endpoint that *exactly* matched the
+        // moved point moves with it. No graph, just coordinate equality.
+        const aMatch = other.x1 === oldEnd.x && other.y1 === oldEnd.y;
+        const bMatch = other.x2 === oldEnd.x && other.y2 === oldEnd.y;
+        if (!aMatch && !bMatch) return other;
+        return {
+          ...other,
+          ...(aMatch ? { x1: newEnd.x, y1: newEnd.y } : {}),
+          ...(bMatch ? { x2: newEnd.x, y2: newEnd.y } : {}),
+        };
+      });
+      return { ...state, walls };
+    }
     case ActionTypes.DELETE_WALL:
       return {
         ...state,

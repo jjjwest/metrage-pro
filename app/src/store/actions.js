@@ -1,6 +1,7 @@
 export const ActionTypes = Object.freeze({
   ADD_WALL: 'ADD_WALL',
   UPDATE_WALL: 'UPDATE_WALL',
+  UPDATE_WALL_LENGTH: 'UPDATE_WALL_LENGTH',
   DELETE_WALL: 'DELETE_WALL',
 
   ADD_OPENING: 'ADD_OPENING',
@@ -40,6 +41,8 @@ export const ActionTypes = Object.freeze({
 
 export const addWall = (wall) => ({ type: ActionTypes.ADD_WALL, wall });
 export const updateWall = (id, patch) => ({ type: ActionTypes.UPDATE_WALL, id, patch });
+export const updateWallLength = (id, length) =>
+  ({ type: ActionTypes.UPDATE_WALL_LENGTH, id, length });
 export const deleteWall = (id) => ({ type: ActionTypes.DELETE_WALL, id });
 
 export const addOpening = (opening) => ({ type: ActionTypes.ADD_OPENING, opening });

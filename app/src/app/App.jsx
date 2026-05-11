@@ -2,9 +2,10 @@ import React, { useReducer } from 'react';
 import { createInitialState } from '../store/initialState.js';
 import { historyReducer, createHistory, canUndo, canRedo } from '../store/history.js';
 import { setTool, undo, redo, updateViewport, cancelDraftWall } from '../store/actions.js';
-import { selectDraftWallPreview } from '../store/selectors.js';
+import { selectDraftWallPreview, selectSelectedWall } from '../store/selectors.js';
 import { TOOLS } from '../constants/index.js';
 import Canvas from '../canvas/Canvas.jsx';
+import EditBar from '../ui/EditBar.jsx';
 
 const DEFAULT_VIEWPORT = { pan: { x: 120, y: 120 }, zoom: 0.2 };
 
@@ -31,6 +32,7 @@ export default function App() {
   const s = history.present;
   const viewport = { pan: s.ui.pan, zoom: s.ui.zoom };
   const draftPreview = selectDraftWallPreview(s);
+  const selectedWall = selectSelectedWall(s);
 
   return (
     <div style={{
@@ -120,8 +122,10 @@ export default function App() {
           viewport={viewport}
           tool={s.ui.tool}
           draftPreview={draftPreview}
+          primarySelectionId={s.ui.primarySelectionId}
           dispatch={dispatch}
         />
+        <EditBar wall={selectedWall} dispatch={dispatch} />
       </div>
     </div>
   );
